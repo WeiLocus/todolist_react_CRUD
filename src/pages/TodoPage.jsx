@@ -111,6 +111,12 @@ const TodoPage = () => {
       })
     })
   }
+
+  //監聽onDelete事件，刪除todo
+  const handleDelete = (id) => {
+    setTodos((prevTodos) => prevTodos.filter(todo => todo.id !== id)
+    )
+  }
   return (
     <div>
       TodoPage
@@ -123,8 +129,9 @@ const TodoPage = () => {
       <TodoCollection todos={todos}
         onToggleDone={handleToggleDone}
         onChangeMode={handleChangeMode}
-        onSave={handleSave}/>
-      <Footer />
+        onSave={handleSave}
+        onDelete={handleDelete}/>
+      <Footer todos={todos}/>
     </div>
   );
 };
