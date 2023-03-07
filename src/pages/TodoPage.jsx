@@ -1,7 +1,7 @@
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { getTodos,createTodo } from '../api/todos'
+import { getTodos,createTodo, patchTodo, deleteTodo } from '../api/todos'
 
 const TodoPage = () => {
   const [inputValue, setInputValue] = useState('');
@@ -13,7 +13,7 @@ const TodoPage = () => {
     setInputValue(value);
   };
 
-  //監聽按下新增看增加todo -> onAddTodo
+  //監聽按下新增看增加todo -> onAddTodo -> createTodo
   const handleAddTodo = async () => {
     if (inputValue.length === 0) return;
     try {
@@ -37,11 +37,11 @@ const TodoPage = () => {
       //新增資料後清空輸入框
       setInputValue('');
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   };
 
-  //監聽todoInput的onkeyDown事件
+  //監聽todoInput的onkeyDown事件 -> createTodo
   const handleKeyDown = async () => {
     if (inputValue.length === 0) return;
     try {
@@ -65,23 +65,30 @@ const TodoPage = () => {
       //新增資料後清空輸入框
       setInputValue('');
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   };
 
   //監聽todoItem的icon，切換完成狀態
-  const handleToggleDone = (id) => {
-    setTodos((prevTodos) => {
-      return prevTodos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            isDone: !todo.isDone,
-          };
-        }
-        return todo;
+  const handleToggleDone = async (id) => {
+    //用id查找出當下要toggle的項目再傳給patchTodo修改資料
+    const currentTodo = todos.find((todo) => todo.id === id);
+    try {
+      await patchTodo({ id, isDone: !currentTodo.isDone });
+      setTodos((prevTodos) => {
+        return prevTodos.map((todo) => {
+          if (todo.id === id) {
+            return {
+              ...todo,
+              isDone: !todo.isDone,
+            };
+          }
+          return todo;
+        });
       });
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   //監聽todoItem的onDoubleClick修改內容事件
@@ -101,8 +108,10 @@ const TodoPage = () => {
   };
 
   //監聽onSave事件，拿到id和修改的title
-  const handleSave = ({ id, title }) => {
-    setTodos((prevTodos) => {
+  const handleSave = async ({ id, title }) => {
+    try {
+      await patchTodo({id, title})
+      setTodos((prevTodos) => {
       return prevTodos.map((todo) => {
         if (todo.id === id) {
           return {
@@ -114,11 +123,21 @@ const TodoPage = () => {
         return todo;
       });
     });
+    } catch (error) {
+      console.error(error)
+    }
+
   };
 
   //監聽onDelete事件，刪除todo
-  const handleDelete = (id) => {
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  const handleDelete = async (id) => {
+    try{
+      await deleteTodo(id)
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    } catch(error) {
+      console.error(error)
+    }
+
   };
 
   //useEffect搭配getTodos，在畫面渲染後取得後端資料，拿到所有todos項目，更新todos的state

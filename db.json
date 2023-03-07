@@ -6,7 +6,7 @@
       "id": 1
     },
     {
-      "title": "Learn to create custom hooks",
+      "title": "Learn to create custom hooks11",
       "isDone": false,
       "id": 2
     },
@@ -19,11 +19,6 @@
       "title": "Learn to implement auth",
       "isDone": false,
       "id": 4
-    },
-    {
-      "title": "learn axios",
-      "isDone": false,
-      "id": 5
     }
   ]
 }

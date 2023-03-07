@@ -29,10 +29,22 @@ export const createTodo = async (payload) => {
   }
 }
 //patch
-const patchTodo = () => {
-
+export const patchTodo = async (payload) => {
+  try {
+    const { title, isDone, id } = payload
+    //帶上要更新資料的id，放入要更新的資料
+    const response = await axios.patch(`${baseURL}/todos/${id}`,{title, isDone})
+    return response.data
+  } catch (error) {
+    console.error('[Patch Todo failed]:', error);
+  }
 }
 //delete
-const deleteTodo = () => {
-
+export const deleteTodo = async (id) => {
+  try {
+    const response = await axios.delete(`${baseURL}/todos/${id}`)
+    return response.data
+  } catch (error) {
+    console.error('[Delete Todo failed]:', error);
+  }
 }
