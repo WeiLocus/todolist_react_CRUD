@@ -1,7 +1,7 @@
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { getTodos } from '../api/todos'
+import { getTodos,createTodo } from '../api/todos'
 
 const TodoPage = () => {
   const [inputValue, setInputValue] = useState('');
@@ -14,37 +14,59 @@ const TodoPage = () => {
   };
 
   //監聽按下新增看增加todo -> onAddTodo
-  const handleAddTodo = () => {
+  const handleAddTodo = async () => {
     if (inputValue.length === 0) return;
-    setTodos((prevTodos) => {
-      return [
-        ...prevTodos,
-        {
-          id: Math.random() * 100,
-          title: inputValue,
-          isDone: false,
-        },
-      ];
-    });
-    //新增資料後清空輸入框
-    setInputValue('');
+    try {
+      //將inputValue作為createTodo()的參數
+      const data = await createTodo({
+        title: inputValue,
+        isDone: false,
+      });
+      //拿到資料後更新畫面todos
+      setTodos((prevTodos) => {
+        return [
+          ...prevTodos,
+          {
+            id: data.id,
+            title: data.title,
+            isDone: data.isDone,
+            isEdit: false,
+          },
+        ];
+      });
+      //新增資料後清空輸入框
+      setInputValue('');
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   //監聽todoInput的onkeyDown事件
-  const handleKeyDown = (event) => {
+  const handleKeyDown = async () => {
     if (inputValue.length === 0) return;
-    setTodos((prevTodos) => {
-      return [
-        ...prevTodos,
-        {
-          id: Math.random() * 100,
-          title: inputValue,
-          isDone: false,
-        },
-      ];
-    });
-    //新增資料後清空輸入框
-    setInputValue('');
+    try {
+      //將inputValue作為createTodo()的參數
+      const data = await createTodo({
+        title: inputValue,
+        isDone: false,
+      });
+      //拿到資料後更新畫面todos
+      setTodos((prevTodos) => {
+        return [
+          ...prevTodos,
+          {
+            id: data.id,
+            title: data.title,
+            isDone: data.isDone,
+            isEdit: false,
+          },
+        ];
+      });
+      //新增資料後清空輸入框
+      setInputValue('');
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   //監聽todoItem的icon，切換完成狀態
