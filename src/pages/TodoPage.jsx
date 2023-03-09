@@ -170,7 +170,7 @@ const TodoPage = () => {
         onSave={handleSave}
         onDelete={handleDelete}
       />
-      <Footer todos={todos} />
+      <Footer numOfTodos={todos} />
     </div>
   );
 };
