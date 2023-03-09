@@ -13,8 +13,9 @@ export const  login = async({username, password}) => {
       password,
     });
     // console.log(data); //確認串接狀態是否成功
-    //註冊成功可以拿到一組authToken
+    //登入成功可以拿到一組authToken
     const { authToken } = data;
+    // console.log(authToken)
     //如果登入成功，加上success 屬性做為 flag
     if (authToken) {
       return { success: true, ...data };
@@ -23,4 +24,24 @@ export const  login = async({username, password}) => {
   } catch (error) {
     console.error('[Login Failed]',error)
   }
+}
+
+//註冊功能
+export const register = async({username, email, password}) => {
+  try {  
+    const { data } = await axios.post(`${authURL}/register`, {
+    username,
+    email,
+    password,
+  });
+  //註冊成功可以拿到一組authToken
+  const { authToken } = data 
+  if ( authToken ) {
+    return { success: true, ...data}
+  }
+  return data
+  } catch (error) {
+    console.error('[Register Failed]', error);
+  }
+
 }

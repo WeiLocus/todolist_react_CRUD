@@ -7,7 +7,7 @@ import {
 import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
 import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../api/auth'
 import Swal from 'sweetalert2';
 
@@ -15,6 +15,8 @@ const LoginPage = () => {
   //用state儲存input value 和 password
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  //切換頁面
+  const navigate = useNavigate()
 
   //點擊登入按鈕呼叫login function
   const handleClick = async() => {
@@ -32,6 +34,7 @@ const LoginPage = () => {
         timer: 1000,
         position: 'top',
       });
+      navigate('/todo')
       return;
     }
     //登入失敗提示訊息
