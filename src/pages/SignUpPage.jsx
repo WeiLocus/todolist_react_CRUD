@@ -6,9 +6,9 @@ import {
 } from 'components/common/auth.styled';
 import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../api/auth';
+import { register, checkPermission } from '../api/auth';
 import Swal from 'sweetalert2';
 
 const SignUpPage = () => {
@@ -51,7 +51,20 @@ const SignUpPage = () => {
       position: 'top',
     });
   };
-
+  //呼叫checkPermission
+  useEffect(() => {
+    const checkTokenIsValid = async() => {
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) return;
+      //checkPermission()會回傳authToken是否有效
+      const result = await checkPermission(authToken);
+      //authToken有效，導引至todo頁面
+      if (result) {
+        return navigate('/todo')
+      }
+    }
+    checkTokenIsValid()
+  },[navigate])
   return (
     <AuthContainer>
       <div>

@@ -43,5 +43,21 @@ export const register = async({username, email, password}) => {
   } catch (error) {
     console.error('[Register Failed]', error);
   }
+}
+
+//身份驗證:Token是否有效
+export const checkPermission = async(authToken) => {
+  try {
+  // response會有 success的參數
+  const response = await axios.get(`${authURL}/test-token`,{
+    headers: {
+      // Bearer是在前綴，還要再空一格＋ authToken
+      Authorization: 'Bearer ' + authToken
+    }
+  })
+  return response.data.success
+  } catch (error) {
+    console.log('[Check Permission Failed]:',error)
+  }
 
 }

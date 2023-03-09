@@ -1,10 +1,12 @@
+import { checkPermission } from '../api/auth';
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { getTodos,createTodo, patchTodo, deleteTodo } from '../api/todos'
 
 const TodoPage = () => {
   const [inputValue, setInputValue] = useState('');
+  const navigate = useNavigate()
   //刪除dummyTodos改成axios取得資料
   const [todos, setTodos] = useState([]);
 
@@ -110,34 +112,32 @@ const TodoPage = () => {
   //監聽onSave事件，拿到id和修改的title
   const handleSave = async ({ id, title }) => {
     try {
-      await patchTodo({id, title})
+      await patchTodo({ id, title });
       setTodos((prevTodos) => {
-      return prevTodos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            title,
-            isEdit: false,
-          };
-        }
-        return todo;
+        return prevTodos.map((todo) => {
+          if (todo.id === id) {
+            return {
+              ...todo,
+              title,
+              isEdit: false,
+            };
+          }
+          return todo;
+        });
       });
-    });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
   };
 
   //監聽onDelete事件，刪除todo
   const handleDelete = async (id) => {
-    try{
-      await deleteTodo(id)
+    try {
+      await deleteTodo(id);
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-    } catch(error) {
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
-
   };
 
   //useEffect搭配getTodos，在畫面渲染後取得後端資料，拿到所有todos項目，更新todos的state
@@ -153,6 +153,22 @@ const TodoPage = () => {
     //執行
     getTodosAsync();
   }, []);
+  //useEffect搭配checkPermission
+  useEffect(() => {
+    const checkTokenIsValid = async() => {
+      const authToken = localStorage.getItem('authToken')
+      if (!authToken) {
+        navigate('/login')
+      }
+      const result = await checkPermission(authToken)
+      //token無效，返回login
+      if (!result) {
+        navigate('/login')
+      }
+    }
+    checkTokenIsValid()
+  },[navigate])
+  
   return (
     <div>
       TodoPage

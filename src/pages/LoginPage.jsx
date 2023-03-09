@@ -6,9 +6,9 @@ import {
 } from 'components/common/auth.styled';
 import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../api/auth'
+import { login,checkPermission } from '../api/auth'
 import Swal from 'sweetalert2';
 
 const LoginPage = () => {
@@ -45,9 +45,21 @@ const LoginPage = () => {
       timer: 1000,
       position: 'top',
     });
-
-
   }
+
+  useEffect(() => {
+    const checkTokenIsValid = async () => {
+      const authToken = localStorage.getItem('authToken');
+      //如果沒有拿到authToken，保持在LoginPagin
+      if (!authToken) return;
+      const result = await checkPermission(authToken);
+      //如果是有效的token
+      if (result) {
+        navigate('/todo');
+      }
+    };
+    checkTokenIsValid();
+  }, [navigate]);
   return (
     <AuthContainer>
       <div>
