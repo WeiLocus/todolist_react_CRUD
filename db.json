@@ -2,7 +2,7 @@
   "todos": [
     {
       "title": "Learn react-router",
-      "isDone": true,
+      "isDone": false,
       "id": 1
     },
     {
@@ -12,7 +12,7 @@
     },
     {
       "title": "Learn to use context",
-      "isDone": true,
+      "isDone": false,
       "id": 3
     },
     {
