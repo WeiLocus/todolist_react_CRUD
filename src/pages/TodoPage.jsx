@@ -1,14 +1,16 @@
-import { checkPermission } from '../api/auth';
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { getTodos,createTodo, patchTodo, deleteTodo } from '../api/todos'
+import { useAuth } from '../contexts/AuthContext'
 
 const TodoPage = () => {
   const [inputValue, setInputValue] = useState('');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   //刪除dummyTodos改成axios取得資料
   const [todos, setTodos] = useState([]);
+  //取出 isAuthenticated 身分狀態
+  const { isAuthenticated } = useAuth();
 
   //監聽InputValue事件
   const handleChange = (value) => {
@@ -155,20 +157,11 @@ const TodoPage = () => {
   }, []);
   //useEffect搭配checkPermission
   useEffect(() => {
-    const checkTokenIsValid = async() => {
-      const authToken = localStorage.getItem('authToken')
-      if (!authToken) {
-        navigate('/login')
-      }
-      const result = await checkPermission(authToken)
-      //token無效，返回login
-      if (!result) {
-        navigate('/login')
-      }
+    if (!isAuthenticated) {
+      navigate('/login');
     }
-    checkTokenIsValid()
-  },[navigate])
-  
+  }, [navigate, isAuthenticated]);
+
   return (
     <div>
       TodoPage

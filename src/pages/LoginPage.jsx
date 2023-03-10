@@ -8,24 +8,25 @@ import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
-import { login,checkPermission } from '../api/auth'
 import Swal from 'sweetalert2';
+import { useAuth } from '../contexts/AuthContext'
 
 const LoginPage = () => {
   //用state儲存input value 和 password
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   //切換頁面
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  //取出login方法與isAuthenticated 身分狀態
+  const { login, isAuthenticated } = useAuth();
 
   //點擊登入按鈕呼叫login function
-  const handleClick = async() => {
-    if (username.length === 0) return
-    if (password.length === 0) return
-    const { success, authToken } = await login({username, password})
+  const handleClick = async () => {
+    if (username.length === 0) return;
+    if (password.length === 0) return;
+    const success = await login({ username, password });
     //登入成功，將token儲存在localStorage
     if (success) {
-      localStorage.setItem('authToken', authToken);
       //登入成功提示訊息
       Swal.fire({
         title: '登入成功',
@@ -34,7 +35,6 @@ const LoginPage = () => {
         timer: 1000,
         position: 'top',
       });
-      navigate('/todo')
       return;
     }
     //登入失敗提示訊息
@@ -45,21 +45,13 @@ const LoginPage = () => {
       timer: 1000,
       position: 'top',
     });
-  }
+  };
 
   useEffect(() => {
-    const checkTokenIsValid = async () => {
-      const authToken = localStorage.getItem('authToken');
-      //如果沒有拿到authToken，保持在LoginPagin
-      if (!authToken) return;
-      const result = await checkPermission(authToken);
-      //如果是有效的token
-      if (result) {
-        navigate('/todo');
-      }
-    };
-    checkTokenIsValid();
-  }, [navigate]);
+    if (isAuthenticated) {
+      navigate('/todo');
+    }
+  }, [navigate, isAuthenticated]);
   return (
     <AuthContainer>
       <div>
@@ -85,7 +77,7 @@ const LoginPage = () => {
           onChange={(passwordInputValue) => setPassword(passwordInputValue)}
         />
       </AuthInputContainer>
-      <AuthButton onClick={handleClick} >登入</AuthButton>
+      <AuthButton onClick={handleClick}>登入</AuthButton>
       <Link to="/signup">
         <AuthLinkText>註冊</AuthLinkText>
       </Link>

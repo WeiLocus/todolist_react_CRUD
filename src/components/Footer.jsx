@@ -34,14 +34,14 @@ const StyledButton = styled.button`
 
 const Footer = ({ numOfTodos }) => {
   const navigate = useNavigate()
-  const handleLoginOutClick = () => {
+  const handleLogoutClick = () => {
     localStorage.removeItem('authToken')
     navigate('/login')
   }
   return (
     <StyledFooter>
       <p>剩餘項目數： {numOfTodos.length}</p>
-      <StyledButton onClick={handleLoginOutClick}>登出</StyledButton>
+      <StyledButton onClick={handleLogoutClick}>登出</StyledButton>
     </StyledFooter>
   );
 };

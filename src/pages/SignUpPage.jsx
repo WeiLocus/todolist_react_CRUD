@@ -8,8 +8,8 @@ import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register, checkPermission } from '../api/auth';
 import Swal from 'sweetalert2';
+import { useAuth } from '../contexts/AuthContext'
 
 const SignUpPage = () => {
   //用state儲存input value、email、password
@@ -18,19 +18,20 @@ const SignUpPage = () => {
   const [password, setPassword] = useState('');
   //切換頁面
   const navigate = useNavigate();
+  //取出 register方法與isAuthenticated 身分狀態
+  const { register, isAuthenticated } = useAuth();
 
   //監聽註冊按鈕呼叫register function
   const handleSignupClick = async () => {
     if (username.length === 0) return;
     if (password.length === 0) return;
     if (email.length === 0) return;
-    const { success, authToken } = await register({
+    const success = await register({
       username,
       email,
       password,
     });
     if (success) {
-      localStorage.setItem('authToken', authToken);
       //註冊成功提示訊息
       Swal.fire({
         title: '註冊成功',
@@ -39,7 +40,6 @@ const SignUpPage = () => {
         timer: 1000,
         position: 'top',
       });
-      navigate('/todo');
       return;
     }
     //登入失敗提示訊息
@@ -53,18 +53,10 @@ const SignUpPage = () => {
   };
   //呼叫checkPermission
   useEffect(() => {
-    const checkTokenIsValid = async() => {
-      const authToken = localStorage.getItem('authToken');
-      if (!authToken) return;
-      //checkPermission()會回傳authToken是否有效
-      const result = await checkPermission(authToken);
-      //authToken有效，導引至todo頁面
-      if (result) {
-        return navigate('/todo')
-      }
+    if (isAuthenticated) {
+      navigate('/todo');
     }
-    checkTokenIsValid()
-  },[navigate])
+  }, [navigate, isAuthenticated]);
   return (
     <AuthContainer>
       <div>

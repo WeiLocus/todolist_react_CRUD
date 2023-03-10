@@ -51,10 +51,11 @@ export const checkPermission = async(authToken) => {
   // response會有 success的參數
   const response = await axios.get(`${authURL}/test-token`,{
     headers: {
-      // Bearer是在前綴，還要再空一格＋ authToken
+      // Bearer是前綴，還要再空一格＋ authToken
       Authorization: 'Bearer ' + authToken
     }
   })
+  //return true/false
   return response.data.success
   } catch (error) {
     console.log('[Check Permission Failed]:',error)
