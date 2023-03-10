@@ -10,7 +10,7 @@ const TodoPage = () => {
   //刪除dummyTodos改成axios取得資料
   const [todos, setTodos] = useState([]);
   //取出 isAuthenticated 身分狀態
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentMember } = useAuth();
 
   //監聽InputValue事件
   const handleChange = (value) => {
@@ -165,7 +165,7 @@ const TodoPage = () => {
   return (
     <div>
       TodoPage
-      <Header />
+      <Header username={currentMember?.name}/>
       <TodoInput
         inputValue={inputValue}
         onChange={handleChange}
