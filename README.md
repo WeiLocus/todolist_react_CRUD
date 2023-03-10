@@ -3,7 +3,7 @@
 ![Toge Page](./src/assets/images/TodoPage.png)
 
 ## Features of the project
-URL: https://weilocus.github.io/login
+URL: https://weilocus.github.io/todolist_react_CRUD/
 - add TodoItem
 - remove TodoItem
 - signup/login/logout account
