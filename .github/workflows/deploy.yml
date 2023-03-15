@@ -1,4 +1,3 @@
-//.github/workflows/deploy.yml
 
 name: Deploy to GitHub pages
 run-name: ${{ github.actor }} is testing out GitHub Actions
